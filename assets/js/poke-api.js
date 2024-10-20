@@ -32,3 +32,18 @@ pokeApi.getPokemons = (offset = 0, limit = 5) => {
     .then((detailRequests) => Promise.all(detailRequests))
     .then((pokemonsDetails) => pokemonsDetails);
 };
+
+pokeApi.searchPokemonByName = (name) => {
+  const url = `https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`;
+
+  return fetch(url)
+    .then((response) => {
+      if (!response.ok) throw new Error("Pokémon não encontrado!");
+      return response.json();
+    })
+    .then(convertPokeApiDetailToPokemon)
+    .catch((error) => {
+      console.error(error);
+      return null;
+    });
+};

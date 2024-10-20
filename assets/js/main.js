@@ -1,6 +1,9 @@
 const pokemonList = document.getElementById("pokemonList");
 const loadMoreButton = document.getElementById("loadMoreButton");
 
+const searchPokemon = document.getElementById("search-pokemon");
+const searchButton = document.getElementById("search-button");
+
 const maxRecords = 151;
 const limit = 12;
 let offset = 0;
@@ -46,4 +49,38 @@ loadMoreButton.addEventListener("click", () => {
   } else {
     loadPokemonItens(offset, limit);
   }
+});
+
+function searchPokemonByName() {
+  const name = searchPokemon.value.trim();
+
+  if (name) {
+    pokeApi.searchPokemonByName(name).then((pokemon) => {
+      if (pokemon) {
+        pokemonList.innerHTML = convertPokemonToLi(pokemon);
+        loadMoreButton.style.display = "none";
+      } else {
+        pokemonList.innerHTML =
+          '<li class="not-founded">Pokémon não encontrado! 😢</li>';
+        loadMoreButton.style.display = "none";
+      }
+    });
+  } else {
+    pokemonList.innerHTML = "";
+    loadPokemonItens(offset, limit);
+  }
+}
+
+searchButton.addEventListener("click", searchPokemonByName);
+
+searchPokemon.addEventListener("keyup", (event) => {
+  if (event.key === "Enter") {
+    searchPokemonByName();
+  }
+});
+
+document.getElementById("resetSearch").addEventListener("click", () => {
+  searchPokemon.value = "";
+  pokemonList.innerHTML = "";
+  loadPokemonItens(offset, limit);
 });
